@@ -1,5 +1,4 @@
-import { http, invoke } from "@tauri-apps/api"
-
+import { invoke } from "@tauri-apps/api/core"
 
 export const startServer = () => {
     invoke('start_server', { port: 1234 });
@@ -8,9 +7,9 @@ export const startServer = () => {
 export const stopServer = async () => {
     const ip = await getIp();
     try {
-        await http.fetch(`http://${ip}:1234/down?password=${8910}`);
+        await fetch(`http://${ip}:1234/down?password=${8910}`);
     } catch (e) {
-
+        console.log(e)
     }
 }
 

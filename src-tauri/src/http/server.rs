@@ -1,5 +1,7 @@
+use local_ip_address::linux::local_ip;
 use std::net::IpAddr;
 
+use rocket::fs::{relative, FileServer};
 use rocket::{get, routes, Config, Shutdown};
 
 include!("../utils/os.rs");
@@ -32,9 +34,16 @@ pub async fn start_server(port: u16) -> &'static str {
 
     rocket::custom(&config)
         .mount("/", routes![down, get_entries])
+        .mount("/", FileServer::from(relative!("../dist")))
         .launch()
         .await
         .expect("Failed to start the server!!!");
 
     return "Started";
+}
+
+#[tauri::command]
+pub fn get_current_ip() -> String {
+    let ip = local_ip().unwrap().to_string();
+    ip
 }
